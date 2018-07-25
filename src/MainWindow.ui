@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>389</width>
+    <height>540</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,1,0,0">
+    <item>
+     <widget class="QWidget" name="widget" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
+       <item>
+        <widget class="QLabel" name="Icon">
+         <property name="minimumSize">
+          <size>
+           <width>56</width>
+           <height>56</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>56</width>
+           <height>56</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="../images/images.qrc">:/logo.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget_2" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="AppName">
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+              <weight>75</weight>
+              <italic>false</italic>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>AppName</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="AppVersion">
+            <property name="font">
+             <font>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>Making your screen look beautiful with horrible hacks.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="title">
+       <string>Display Selection:</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QComboBox" name="DisplaysCombo"/>
+       </item>
+       <item>
+        <widget class="QComboBox" name="ResolutionsComboBox">
+         <property name="currentText">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Scale Factor:</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
+       <item>
+        <widget class="QWidget" name="widget_3" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,0">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QDoubleSpinBox" name="ScaleFactor">
+            <property name="minimum">
+             <double>1.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>3.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.050000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="AutoCheckbox">
+            <property name="text">
+             <string>Auto</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="FixQtDpiCheckbox">
+         <property name="text">
+          <string>Update Qt DPI configuration in ~/.profile (needs logout)</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Wait Time (to apply settings after GNOME finishes loading)</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="widget_4" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,0">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QSpinBox" name="WaitTime">
+         <property name="maximum">
+          <number>20</number>
+         </property>
+         <property name="value">
+          <number>2</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Seconds</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Script Preview:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="ScriptPreview">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="placeholderText">
+       <string>No script preview yet</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QPushButton" name="CloseButton">
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="TestButton">
+        <property name="text">
+         <string>Test Script</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="SaveScriptButton">
+        <property name="text">
+         <string>Apply (Run at Startup)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>389</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="FileMenu">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="SaveScriptMenu"/>
+    <addaction name="separator"/>
+    <addaction name="QuitMenu"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="ReportBugMenu"/>
+    <addaction name="separator"/>
+    <addaction name="AboutQtMenu"/>
+   </widget>
+   <addaction name="FileMenu"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="SaveScriptMenu">
+   <property name="text">
+    <string>Save Script (run at startup)</string>
+   </property>
+  </action>
+  <action name="QuitMenu">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="ReportBugMenu">
+   <property name="text">
+    <string>Report Bug...</string>
+   </property>
+  </action>
+  <action name="AboutQtMenu">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>
