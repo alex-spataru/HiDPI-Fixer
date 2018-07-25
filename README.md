@@ -5,7 +5,7 @@ This application allows you to create a script that acomplishes the following ta
 - The end result looks nicer and is way less buggy than using Wayland
 - The generated script is configured to run everytime you log in
 - To avoid "race" conditions with GNOME-Settings, you can delay the execution of the script
-- You can also instruct the application to modify the "~/.profile" file to correctly scale Qt-based apps (as KDE does)
+- You can also instruct the application to modify the `~/.profile` file to correctly scale Qt-based apps (as KDE does)
 
 # Installing/running
 
