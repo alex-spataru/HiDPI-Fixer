@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     font.setFamily ("Monospace");
     ui->ScriptPreview->setFont (font);
     ui->ScriptPreview->setMinimumWidth (360);
-    ui->ScriptPreview->setMinimumHeight (180);
+    ui->ScriptPreview->setMinimumHeight (120);
 
     // Resize window to minimum size
     resize (0, 0);
@@ -99,8 +99,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
              this,                      SLOT (saveScript()));
     connect (ui->WaitTime,            SIGNAL (valueChanged (int)),
              this,                      SLOT (updateScript (int)));
-    connect (ui->AutoCheckbox,        SIGNAL (toggled (bool)),
-             this,                      SLOT (setAutoScale (bool)));
     connect (ui->ReportBugMenu,       SIGNAL (triggered()),
              this,                      SLOT (reportBugs()));
     connect (ui->AboutQtMenu,         SIGNAL (triggered()),
@@ -254,19 +252,6 @@ void MainWindow::updateScriptExecControls()
 void MainWindow::updateScript (const int unused) {
     (void) unused;
     generateScript (ui->ScaleFactor->value());
-}
-
-/**
- * If \a enabled is set to \c true, then the application will
- * calculate the most appropiate scale factor for the screen
- */
-void MainWindow::setAutoScale (const bool enabled) {
-    // Enable or disable the scale factor control
-    ui->ScaleFactor->setEnabled (!enabled);
-
-    // Calculate the scale factor
-    if (enabled)
-        ui->ScaleFactor->setValue (qApp->primaryScreen()->physicalDotsPerInch() / 92.0);
 }
 
 /**
