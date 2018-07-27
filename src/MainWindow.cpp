@@ -35,6 +35,11 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+/**
+ * Defines the folder in which the HiDPI-Fixer scripts are stored
+ */
+static const QString HiDPI_FixerHome = QString ("%1/.hidpi-fixer").arg (QDir::homePath());
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     // Check if we are running on GNU/Linux
@@ -115,6 +120,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
  */
 MainWindow::~MainWindow()
 {
+    // Delete test script
+    QFile file (HiDPI_FixerHome + "/test");
+    if (file.exists())
+        file.remove();
+
+    // De-allocate UI memory
     if (ui != nullptr)
         delete ui;
 }
@@ -126,8 +137,8 @@ MainWindow::~MainWindow()
 void MainWindow::saveScript() {
     // Create script specific to the selected display
     QString dispName = ui->DisplaysCombo->currentText();
-    QString scriptPath = QString ("%1/.hdpi-fixer/scripts/%2")
-            .arg (QDir::homePath())
+    QString scriptPath = QString ("%1/scripts/%2")
+            .arg (HiDPI_FixerHome)
             .arg (dispName);
 
     // There was an error saving (or running the script)
@@ -172,7 +183,7 @@ void MainWindow::saveScript() {
     }
 
     // Get launcher file name
-    QString launcherPath = QString ("%1/.config/autostart/%2.desktop")
+    QString launcherPath = QString ("%1/.config/autostart/HiDPI-Fixer_%2.desktop")
             .arg (QDir::homePath())
             .arg (dispName);
 
@@ -186,14 +197,15 @@ void MainWindow::saveScript() {
     QFile file (launcherPath);
     if (file.open (QFile::WriteOnly)) {
         // Set launcher data
-        QString data = "[Desktop Entry]\n"
-                       "Type=Application\n"
-                       "Exec=bash \"" + scriptPath +"\"\n"
-                       "Hidden=false\n"
-                       "NoDisplay=false\n"
-                       "X-GNOME-Autostart-enabled=true\n"
-                       "Name=Apply HiDPI Config for " + dispName + "\n"
-                       "Comment=Created by HiDPI-Fixer";
+        QString data = QString ("[Desktop Entry]\n"
+                                "Type=Application\n"
+                                "Exec=bash \"" + scriptPath +
+                                "\"\n"
+                                "Hidden=false\n"
+                                "NoDisplay=false\n"
+                                "X-GNOME-Autostart-enabled=true\n"
+                                "Name=Apply HiDPI Config for " + dispName +
+                                "\nComment=Created by HiDPI-Fixer");
 
         // Write launcher data to file
         file.write (data.toUtf8());
@@ -212,8 +224,7 @@ void MainWindow::saveScript() {
  * executes the script.
  */
 void MainWindow::testScript() {
-    QString filePath = QString ("%1/.hdpi-fixer/runtime/test").arg (QDir::homePath());
-    saveAndExecuteScript (filePath);
+    saveAndExecuteScript (HiDPI_FixerHome + "/test");
 }
 
 /**
