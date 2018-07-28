@@ -32,13 +32,9 @@
 #include <QtMath>
 #include <QX11Info>
 
+#include "Global.h"
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
-
-/**
- * Defines the folder in which the HiDPI-Fixer scripts are stored
- */
-static const QString HiDPI_FixerHome = QString ("%1/.hidpi-fixer").arg (QDir::homePath());
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -183,9 +179,7 @@ void MainWindow::saveScript() {
     }
 
     // Get launcher file name
-    QString launcherPath = QString ("%1/.config/autostart/HiDPI-Fixer_%2.desktop")
-            .arg (QDir::homePath())
-            .arg (dispName);
+    QString launcherPath = HiDPI_AutostartDir + "/" + HiDPI_AutostartBase + dispName + ".desktop";
 
     // Create .config and autostart folders if not present
     QFileInfo info (launcherPath);

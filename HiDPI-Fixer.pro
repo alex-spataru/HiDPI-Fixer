@@ -37,6 +37,21 @@ QT += widgets
 QT += x11extras
 
 #-------------------------------------------------------------------------------
+# Deploy config
+#-------------------------------------------------------------------------------
+
+linux:!android {
+    target.path = /usr/bin
+    icon.path = /usr/share/pixmaps
+    desktop.path = /usr/share/applications
+    icon.files += $$PWD/deploy/linux/hidpi-fixer.png
+    desktop.files += $$PWD/deploy/linux/hidpi-fixer.desktop
+
+    TARGET = hidpi-fixer
+    INSTALLS += target desktop icon
+}
+
+#-------------------------------------------------------------------------------
 # Make options
 #-------------------------------------------------------------------------------
 
@@ -56,7 +71,8 @@ SOURCES += \
     $$PWD/src/MainWindow.cpp
 
 HEADERS += \
-    $$PWD/src/MainWindow.h
+    $$PWD/src/MainWindow.h \
+    src/Global.h
 
 FORMS += \
     $$PWD/src/MainWindow.ui
