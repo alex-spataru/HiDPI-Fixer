@@ -60,10 +60,10 @@ bool StartupVerifications (int argc, char** argv) {
         QDir home (SCRIPTS_HOME);
         if (home.exists()) {
             if (home.removeRecursively())
-                qDebug() << "Folder" << SCRIPTS_HOME << "removed successfully";
+                qDebug() << "Folder" << SCRIPTS_HOME << "removed successfully.";
             else
                 qDebug() << "[Error] Failed to remove folder" << SCRIPTS_HOME
-                         << "you will need to manually remove it";
+                         << "you will need to manually remove it.";
         }
 
         // Delete startup launchers
@@ -75,10 +75,11 @@ bool StartupVerifications (int argc, char** argv) {
             if (it.fileName().contains (AUTOSTART_PATTERN) &&
                     it.fileName().endsWith (".desktop")) {
                 if (dir.remove (it.filePath()))
-                    qDebug() << "Removed" << qPrintable (it.filePath());
+                    qDebug() << "Removed" << qPrintable (it.filePath()) << ".";
                 else
                     qDebug() << "[Error] Failed to remove"
-                             << qPrintable (it.fileName());
+                             << qPrintable (it.fileName())
+                             << ".";
             }
         }
 
@@ -93,8 +94,8 @@ bool StartupVerifications (int argc, char** argv) {
     else if (arguments == "-v" || arguments == "--version") {
         qDebug() << qPrintable (APP_NAME) << "version"
                  << qPrintable (APP_VERSION);
-        qDebug() << "Copyright (c) 2018 Alex Spataru <https://github.com/alex-spataru>";
-        qDebug() << "Released under the MIT License";
+        qDebug() << "Copyright (c) 2018 Alex Spataru <https://github.com/alex-spataru>.";
+        qDebug() << "Released under the MIT License.";
         return false;
     }
 
@@ -111,7 +112,7 @@ bool StartupVerifications (int argc, char** argv) {
     // Invalid argument, warn user, but run the application
     else if (!arguments.isEmpty()) {
         qDebug() << "Warning: Invalid argument " << arguments
-                 << "type --help to show available options";
+                 << "type --help to show available options.";
         return true;
     }
 
