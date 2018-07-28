@@ -24,18 +24,23 @@
 #define GLOBAL_H
 
 #include <QDir>
-#include <QFile>
 #include <QString>
+
+/**
+ * Define application information
+ */
+static const QString APP_VERSION = "1.1";
+static const QString APP_NAME = "HiDPI Fixer";
 
 /**
  * Defines the folder in which the HiDPI-Fixer scripts are stored
  */
-static const QString HiDPI_FixerHome = QString ("%1/.hidpi-fixer").arg (QDir::homePath());
+static const QString SCRIPTS_HOME = QString ("%1/.hidpi-fixer").arg (QDir::homePath());
 
 /**
  * Defines the file location and name pattern for startup scripts
  */
-static const QString HiDPI_AutostartBase = "HiDPI-Fixer_";
-static const QString HiDPI_AutostartDir = QString ("%1/.config/autostart").arg (QDir::homePath());
+static const QString AUTOSTART_PATTERN = "HiDPI-Fixer_";
+static const QString AUTOSTART_LOCATION = QString ("%1/.config/autostart").arg (QDir::homePath());
 
 #endif

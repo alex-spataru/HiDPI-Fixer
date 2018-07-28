@@ -48,11 +48,7 @@ private slots:
     void updateResolutionCombo (const int index);
 
 private:
-    void forceQuit() __attribute__((noreturn));
     int saveAndExecuteScript (const QString& location);
-
-    QStringList availableDisplays();
-    QStringList availableResolutions (const int displayIndex);
 
 private:
     Ui::MainWindow *ui;

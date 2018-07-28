@@ -20,28 +20,9 @@
  * THE SOFTWARE.
  */
 
-#include "Global.h"
-#include "Arguments.h"
-#include "MainWindow.h"
+#ifndef ARGUMENTS_H
+#define ARGUMENTS_H
 
-/**
- * Main entry point of the application
- *
- * \param argc Argument count
- * \param argv Argument data
- */
-int main (int argc, char **argv)
-{
-    QApplication app (argc, argv);
-    app.setApplicationVersion ("1.1");
-    app.setApplicationName ("HiDPI Fixer");
+extern bool StartupVerifications (int argc, char** argv);
 
-    if (StartupVerifications (argc, argv)) {
-        MainWindow window;
-        window.show();
-
-        return app.exec();
-    }
-
-    return EXIT_SUCCESS;
-}
+#endif

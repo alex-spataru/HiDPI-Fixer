@@ -20,28 +20,12 @@
  * THE SOFTWARE.
  */
 
-#include "Global.h"
-#include "Arguments.h"
-#include "MainWindow.h"
+#ifndef XRANDR_BRIDGE_H
+#define XRANDR_BRIDGE_H
 
-/**
- * Main entry point of the application
- *
- * \param argc Argument count
- * \param argv Argument data
- */
-int main (int argc, char **argv)
-{
-    QApplication app (argc, argv);
-    app.setApplicationVersion ("1.1");
-    app.setApplicationName ("HiDPI Fixer");
+#include <QStringList>
 
-    if (StartupVerifications (argc, argv)) {
-        MainWindow window;
-        window.show();
+extern QStringList XrandrGetAvailableDisplays();
+extern QStringList XrandrDisplayResolutions (const int display);
 
-        return app.exec();
-    }
-
-    return EXIT_SUCCESS;
-}
+#endif

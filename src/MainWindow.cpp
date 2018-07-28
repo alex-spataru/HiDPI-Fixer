@@ -22,7 +22,6 @@
 
 #include <QDir>
 #include <QDebug>
-#include <QScreen>
 #include <QProcess>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -30,32 +29,15 @@
 #include <QDesktopServices>
 
 #include <QtMath>
-#include <QX11Info>
 
 #include "Global.h"
 #include "MainWindow.h"
+#include "XRandrBridge.h"
+
 #include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-    // Check if we are running on GNU/Linux
-#ifndef Q_OS_LINUX
-    QMessageBox::warning (this,
-                          tr ("Warning"),
-                          tr ("This application is intended for Linux "\
-                              "distributions only!"));
-    forceQuit();
-#endif
-
-    // Check that an XServer is running
-    if (!QX11Info::isPlatformX11()) {
-        QMessageBox::warning (this,
-                              tr ("Warning"),
-                              tr ("You are not running this application "\
-                                  "on an X11 instance!"));
-        forceQuit();
-    }
-
     // Generate UI components
     ui = new Ui::MainWindow;
     ui->setupUi (this);
@@ -108,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // Populate controls
     ui->ScriptPreview->setPlainText ("");
     ui->AppName->setText (qApp->applicationName());
-    ui->DisplaysCombo->addItems(availableDisplays());
+    ui->DisplaysCombo->addItems (XrandrGetAvailableDisplays());
 }
 
 /**
@@ -117,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 MainWindow::~MainWindow()
 {
     // Delete test script
-    QFile file (HiDPI_FixerHome + "/test");
+    QFile file (SCRIPTS_HOME + "/test");
     if (file.exists())
         file.remove();
 
@@ -134,7 +116,7 @@ void MainWindow::saveScript() {
     // Create script specific to the selected display
     QString dispName = ui->DisplaysCombo->currentText();
     QString scriptPath = QString ("%1/scripts/%2")
-            .arg (HiDPI_FixerHome)
+            .arg (SCRIPTS_HOME)
             .arg (dispName);
 
     // There was an error saving (or running the script)
@@ -179,7 +161,7 @@ void MainWindow::saveScript() {
     }
 
     // Get launcher file name
-    QString launcherPath = HiDPI_AutostartDir + "/" + HiDPI_AutostartBase + dispName + ".desktop";
+    QString launcherPath = AUTOSTART_LOCATION + "/" + AUTOSTART_PATTERN + dispName + ".desktop";
 
     // Create .config and autostart folders if not present
     QFileInfo info (launcherPath);
@@ -218,7 +200,7 @@ void MainWindow::saveScript() {
  * executes the script.
  */
 void MainWindow::testScript() {
-    saveAndExecuteScript (HiDPI_FixerHome + "/test");
+    saveAndExecuteScript (SCRIPTS_HOME + "/test");
 }
 
 /**
@@ -296,16 +278,16 @@ void MainWindow::generateScript (const qreal scale)
     int pHeight = qCeil (height * multFactor);
 
     // Construct xrandr command
-    QString xcmd;
-    xcmd.append (QString ("xrandr --output %1 --size %2x%3\n")
-                 .arg (ui->DisplaysCombo->currentText())
-                 .arg (width)
-                 .arg (height));
-    xcmd.append (QString ("xrandr --output %1 --scale %2x%2 --panning %3x%4")
-                 .arg (ui->DisplaysCombo->currentText())
-                 .arg (multFactor)
-                 .arg (pWidth)
-                 .arg (pHeight));
+    QString xrandrCommands;
+    xrandrCommands.append (QString ("xrandr --output %1 --size %2x%3\n")
+                           .arg (ui->DisplaysCombo->currentText())
+                           .arg (width)
+                           .arg (height));
+    xrandrCommands.append (QString ("xrandr --output %1 --scale %2x%2 --panning %3x%4")
+                           .arg (ui->DisplaysCombo->currentText())
+                           .arg (multFactor)
+                           .arg (pWidth)
+                           .arg (pHeight));
 
     // Add shebang
     QString script;
@@ -334,7 +316,7 @@ void MainWindow::generateScript (const qreal scale)
     script.append ("# Xrandr scaling hack, --panning is used\n"
                    "# in order to let the mouse navigate\n"
                    "# in all of the 'generated' screen space.\n");
-    script.append (xcmd);
+    script.append (xrandrCommands);
     script.append ("\n");
 
     // Echo code
@@ -351,16 +333,7 @@ void MainWindow::generateScript (const qreal scale)
 void MainWindow::updateResolutionCombo (const int index)
 {
     ui->ResolutionsComboBox->clear();
-    ui->ResolutionsComboBox->addItems (availableResolutions(index));
-}
-
-/**
- * Forces the application to quit.
- * This function is only used when the application is launched
- * on an OS different than GNU/Linux or is not executed with a X Server.
- */
-void MainWindow::forceQuit() {
-    quick_exit (EXIT_FAILURE);
+    ui->ResolutionsComboBox->addItems (XrandrDisplayResolutions (index));
 }
 
 /**
@@ -370,10 +343,10 @@ void MainWindow::forceQuit() {
  */
 int MainWindow::saveAndExecuteScript (const QString& location) {
     // Get script text
-    QString script = ui->ScriptPreview->document()->toPlainText();
+    QString scriptData = ui->ScriptPreview->document()->toPlainText();
 
     // Script is empty
-    if (script.isEmpty()) {
+    if (scriptData.isEmpty()) {
         QMessageBox::warning (this,
                               tr ("Error"),
                               tr ("The script is empty!"));
@@ -389,7 +362,7 @@ int MainWindow::saveAndExecuteScript (const QString& location) {
     // Save script to file
     QFile file (location);
     if (file.open (QFile::WriteOnly)) {
-        file.write (script.toUtf8());
+        file.write (scriptData.toUtf8());
         file.close();
     }
 
@@ -404,9 +377,8 @@ int MainWindow::saveAndExecuteScript (const QString& location) {
     }
 
     // Make script executable
-    QProcess chmod;
     QStringList arguments = {"+x", file.fileName()};
-    if (chmod.execute ("chmod", arguments) != 0) {
+    if (QProcess::execute ("chmod", arguments) != 0) {
         qWarning() << Q_FUNC_INFO
                    << "Cannot execute chmod" << arguments;
         QMessageBox::warning (this,
@@ -417,8 +389,7 @@ int MainWindow::saveAndExecuteScript (const QString& location) {
     }
 
     // Run file
-    QProcess test;
-    if (test.execute (file.fileName()) != 0) {
+    if (QProcess::execute (file.fileName()) != 0) {
         qWarning() << Q_FUNC_INFO
                    << "Cannot execute" << file.fileName();
         QMessageBox::warning (this,
@@ -429,113 +400,4 @@ int MainWindow::saveAndExecuteScript (const QString& location) {
 
     // Notify caller that everything is OK
     return 0;
-}
-
-/**
- * Returns a list with all the displays detected by Xrandr
- */
-QStringList MainWindow::availableDisplays() {
-    QProcess process;
-    QStringList arguments = {"--listactivemonitors"};
-
-    // Try to run xrandr --listactivemonitors
-    process.start ("xrandr", arguments);
-    process.waitForFinished (1000);
-
-    // If process fails, abort
-    if (process.exitCode()!= 0) {
-        qWarning() << Q_FUNC_INFO
-                   << "xrandr returned exit code"
-                   << process.exitCode();
-        QMessageBox::warning (this,
-                              tr ("Error"),
-                              tr ("Cannot execute xrandr --listactivemonitors"));
-        return QStringList();
-    }
-
-    // Used to know if something went bad
-    bool ok = true;
-
-    // Get process output
-    QString output = QString (process.readAllStandardOutput());
-    QStringList lines = output.split (QChar ('\n'));
-
-    // Get monitor count
-    QString mcStr = lines.at (0);
-    int monitorCount = mcStr.replace (QRegExp ("[^0-9]"), "").toInt (&ok);
-    if (!ok) {
-        qWarning() << Q_FUNC_INFO
-                   << "Cannot get monitor count";
-        QMessageBox::warning (this,
-                              tr ("Error"),
-                              tr ("Cannot get monitor count"));
-        return QStringList();
-    }
-
-    // Get name of each monitor
-    QStringList displays;
-    for (int i = 1; i <= monitorCount; ++i) {
-        QStringList monitorInfo = lines.at(i).split (" ");
-        displays.append (monitorInfo.last());
-    }
-
-    // Check if display list is empty
-    if (displays.isEmpty()) {
-        qWarning() << Q_FUNC_INFO
-                   << "Error while obtaining monitor names";
-        QMessageBox::warning (this,
-                              tr ("Error"),
-                              tr ("Cannot obtain monitor names"));
-    }
-
-    // Returned obtained displays
-    return displays;
-}
-
-/**
- * Returns a list with the available resolutions reported
- * by the xrandr-process for the given display
- */
-QStringList MainWindow::availableResolutions (const int displayIndex) {
-    Q_ASSERT (displayIndex >= 0);
-
-    QProcess process;
-    QStringList arguments = {"--screen", QString::number (displayIndex)};
-
-    // Try to run xrandr --screen $displayIndex
-    process.start ("xrandr", arguments);
-    process.waitForFinished (1000);
-
-    // If process fails, abort
-    if (process.exitCode() != 0) {
-        qWarning() << Q_FUNC_INFO
-                   << "xrandr returned exit code"
-                   << process.exitCode();
-        QMessageBox::warning (this,
-                              tr ("Error"),
-                              tr ("Cannot obtain available resolutions"));
-        return QStringList();
-    }
-
-    // Get process output
-    QString output = QString (process.readAllStandardOutput());
-
-    // Get resolutions
-    QStringList resolutions;
-    QRegExp rx ("([0-9])+x+([0-9]*)+     ");
-    while (output.contains (rx)) {
-        // Get index of match
-        int pos = rx.indexIn (output);
-
-        // Add match to resolutions (and avoid duplicates)
-        if (!rx.capturedTexts().isEmpty())
-            if (!resolutions.contains (rx.capturedTexts().first()))
-                resolutions.append (rx.capturedTexts().first());
-
-        // Remove match from original string
-        output.remove (pos, resolutions.last().length());
-    }
-
-    // Return obtained resolutions
-    return resolutions;
 }
