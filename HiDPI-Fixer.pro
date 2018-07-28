@@ -69,13 +69,13 @@ CONFIG += c++11
 SOURCES += \
     $$PWD/src/main.cpp \
     $$PWD/src/MainWindow.cpp \
-    $$PWD/src/Arguments.cpp \
+    $$PWD/src/StartupVerifications.cpp \
     $$PWD/src/XRandrBridge.cpp
 
 HEADERS += \
     $$PWD/src/MainWindow.h \
     $$PWD/src/Global.h \
-    $$PWD/src/Arguments.h \
+    $$PWD/src/StartupVerifications.h \
     $$PWD/src/XRandrBridge.h
 
 FORMS += \

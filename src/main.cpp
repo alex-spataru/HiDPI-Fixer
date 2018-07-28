@@ -21,8 +21,8 @@
  */
 
 #include "Global.h"
-#include "Arguments.h"
 #include "MainWindow.h"
+#include "StartupVerifications.h"
 
 /**
  * Main entry point of the application
@@ -33,8 +33,8 @@
 int main (int argc, char **argv)
 {
     QApplication app (argc, argv);
-    app.setApplicationVersion ("1.1");
-    app.setApplicationName ("HiDPI Fixer");
+    app.setApplicationName (APP_NAME);
+    app.setApplicationVersion (APP_VERSION);
 
     if (StartupVerifications (argc, argv)) {
         MainWindow window;

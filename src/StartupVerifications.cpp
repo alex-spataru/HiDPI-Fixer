@@ -27,7 +27,7 @@
 #include <QDirIterator>
 
 #include "Global.h"
-#include "Arguments.h"
+#include "StartupVerifications.h"
 
 /**
  * Reads the given user \a args and takes appropiate actions, this function

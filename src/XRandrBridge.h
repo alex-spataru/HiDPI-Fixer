@@ -26,6 +26,6 @@
 #include <QStringList>
 
 extern QStringList XrandrGetAvailableDisplays();
-extern QStringList XrandrDisplayResolutions (const int display);
+extern QStringList XrandrGetAvailableResolutions (const int display);
 
 #endif

@@ -333,7 +333,7 @@ void MainWindow::generateScript (const qreal scale)
 void MainWindow::updateResolutionCombo (const int index)
 {
     ui->ResolutionsComboBox->clear();
-    ui->ResolutionsComboBox->addItems (XrandrDisplayResolutions (index));
+    ui->ResolutionsComboBox->addItems (XrandrGetAvailableResolutions (index));
 }
 
 /**
