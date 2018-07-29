@@ -137,7 +137,7 @@ void MainWindow::saveScript() {
         if (file.open (QIODevice::WriteOnly | QIODevice::Append)) {
             QString qssf = QString::number (qCeil (ui->ScaleFactor->value()));
             QString cmd = "\n"
-                          "# Adapt Qt apps to HiDPI display config [HiDPI-Fixer]\n"
+                          "# Adapt Qt apps to HiDPI config [HiDPI-Fixer]\n"
                           "export QT_SCALE_FACTOR=1\n"
                           "export QT_AUTO_SCREEN_SCALE_FACTOR=0\n"
                           "export QT_SCREEN_SCALE_FACTORS=" + qssf + "\n";
@@ -161,7 +161,8 @@ void MainWindow::saveScript() {
     }
 
     // Get launcher file name
-    QString launcherPath = AUTOSTART_LOCATION + "/" + AUTOSTART_PATTERN + dispName + ".desktop";
+    QString launcherPath = AUTOSTART_LOCATION + "/" + 
+                           AUTOSTART_PATTERN + dispName + ".desktop";
 
     // Create .config and autostart folders if not present
     QFileInfo info (launcherPath);
@@ -190,8 +191,9 @@ void MainWindow::saveScript() {
         // Notify user
         QMessageBox::information (this,
                                   tr ("Info"),
-                                  tr ("Changes applied, its recommended to logout "
-                                      "and login again to test that the script works as intended."));
+                                  tr ("Changes applied, its recommended to "
+                                      "logout and login again to test that "
+                                      "the script works as intended."));
     }
 }
 
@@ -207,7 +209,8 @@ void MainWindow::testScript() {
  * Opens the GitHub issues page
  */
 void MainWindow::reportBugs() {
-    QDesktopServices::openUrl (QUrl ("https://github.com/alex-spataru/HiDPI-Fixer/issues"));
+    QDesktopServices::openUrl (QUrl ("https://github.com/alex-spataru"
+                                     "/HiDPI-Fixer/issues"));
 }
 
 /**
@@ -262,10 +265,12 @@ void MainWindow::generateScript (const qreal scale)
     // Check if current selected resolution is valid
     QStringList size = ui->ResolutionsComboBox->currentText().split ("x");
     if (size.count() != 2) {
-        qWarning() << "Invalid resolution" << ui->ResolutionsComboBox->currentText();
+        qWarning() << "Invalid resolution" 
+                   << ui->ResolutionsComboBox->currentText();
         QMessageBox::warning (this,
                               tr ("Error"),
-                              tr ("Invalid resolution \"%1\"!").arg (ui->ResolutionsComboBox->currentText()));
+                              tr ("Invalid resolution \"%1\"!")
+                              .arg (ui->ResolutionsComboBox->currentText()));
         return;
     }
 
@@ -283,7 +288,8 @@ void MainWindow::generateScript (const qreal scale)
                            .arg (ui->DisplaysCombo->currentText())
                            .arg (width)
                            .arg (height));
-    xrandrCommands.append (QString ("xrandr --output %1 --scale %2x%2 --panning %3x%4")
+    xrandrCommands.append (QString ("xrandr --output %1 --scale %2x%2 "
+                                    "--panning %3x%4")
                            .arg (ui->DisplaysCombo->currentText())
                            .arg (multFactor)
                            .arg (pWidth)
@@ -299,25 +305,25 @@ void MainWindow::generateScript (const qreal scale)
     script.append ("\n\n");
 
     // Enable rotation lock (to avoid ugly shit when rotating the screen)
-    script.append ("# Enable rotation lock  to avoid\n"
-                   "# issues with xrandr.\n");
-    script.append ("gsettings set org.gnome.settings-daemon.peripherals.touchscreen orientation-lock true");
+    script.append ("# Enable rotation lock  to avoid issues with xrandr.\n");
+    script.append ("gsettings set "
+                   "org.gnome.settings-daemon.peripherals.touchscreen "
+                   "orientation-lock true");
     script.append ("\n\n");
 
     // Set GNOME scaling factor (int)
-    script.append ("# Set GNOME's scaling factor\n"
-                   "# Modify this if using another\n"
-                   "# DE environment.\n");
+    script.append ("# Set GNOME's scaling factor. Modify this if using\n"
+                   "# another DE environment.\n");
     script.append ("gsettings set org.gnome.desktop.interface scaling-factor ");
     script.append (QString::number (factor));
     script.append ("\n\n");
 
     // Xrandr code
-    script.append ("# Xrandr scaling hack, --panning is used\n"
-                   "# in order to let the mouse navigate\n"
-                   "# in all of the 'generated' screen space.\n");
+    script.append ("# Xrandr scaling hack, --panning is used in order to let\n"
+                   "# the mouse navigate in all of the 'generated'\n"
+                   "# screen space.\n");
     script.append (xrandrCommands);
-    script.append ("\n");
+    script.append ("\n\n");
 
     // Echo code
     script.append ("echo \"Script finished execution\"\n");
@@ -372,7 +378,8 @@ int MainWindow::saveAndExecuteScript (const QString& location) {
                    << "Cannot open" << file.fileName() << "for writing!";
         QMessageBox::warning (this,
                               tr ("Error"),
-                              tr ("Cannot open %1 for writing!").arg (file.fileName()));
+                              tr ("Cannot open %1 for writing!")
+                              .arg (file.fileName()));
         return 1;
     }
 
@@ -394,7 +401,8 @@ int MainWindow::saveAndExecuteScript (const QString& location) {
                    << "Cannot execute" << file.fileName();
         QMessageBox::warning (this,
                               tr ("Error"),
-                              tr ("Cannot run script at %1").arg (file.fileName()));
+                              tr ("Cannot run script at %1")
+                              .arg (file.fileName()));
         return 1;
     }
 
