@@ -28,7 +28,7 @@
 #include <QApplication>
 #include <QDesktopServices>
 
-#include <QtMath>
+#include <cmath>
 
 #include "Global.h"
 #include "MainWindow.h"
@@ -135,7 +135,7 @@ void MainWindow::saveScript() {
         // Open file for editing
         QFile file (profilePath);
         if (file.open (QIODevice::WriteOnly | QIODevice::Append)) {
-            QString qssf = QString::number (qCeil (ui->ScaleFactor->value()));
+            QString qssf = QString::number ((int) ceil (ui->ScaleFactor->value()));
             QString cmd = "\n"
                           "# Adapt Qt apps to HiDPI config [HiDPI-Fixer]\n"
                           "export QT_SCALE_FACTOR=1\n"
@@ -161,8 +161,8 @@ void MainWindow::saveScript() {
     }
 
     // Get launcher file name
-    QString launcherPath = AUTOSTART_LOCATION + "/" + 
-                           AUTOSTART_PATTERN + dispName + ".desktop";
+    QString launcherPath = AUTOSTART_LOCATION + "/" +
+            AUTOSTART_PATTERN + dispName + ".desktop";
 
     // Create .config and autostart folders if not present
     QFileInfo info (launcherPath);
@@ -251,10 +251,10 @@ void MainWindow::updateScript (const int unused) {
 void MainWindow::generateScript (const qreal scale)
 {
     // Calculate int scaling factor
-    int factor = qCeil (scale);
+    int factor = static_cast<int>(ceil (scale));
 
     // Calculate the screen multiplying factor
-    qreal multFactor = factor / scale;
+    qreal multFactor = floor ((factor / scale) * 1000) / 1000.0;
 
     // Scale factor is 1...we don't need a script!
     if (factor == 1) {
@@ -265,7 +265,7 @@ void MainWindow::generateScript (const qreal scale)
     // Check if current selected resolution is valid
     QStringList size = ui->ResolutionsComboBox->currentText().split ("x");
     if (size.count() != 2) {
-        qWarning() << "Invalid resolution" 
+        qWarning() << "Invalid resolution"
                    << ui->ResolutionsComboBox->currentText();
         QMessageBox::warning (this,
                               tr ("Error"),
@@ -279,21 +279,19 @@ void MainWindow::generateScript (const qreal scale)
     int height = size.at (1).toInt();
 
     // Calculate panning
-    int pWidth = qCeil (width * multFactor);
-    int pHeight = qCeil (height * multFactor);
+    int pWidth = static_cast<int>(ceil (width * multFactor));
+    int pHeight = static_cast<int>(ceil (height * multFactor));
 
     // Construct xrandr command
-    QString xrandrCommands;
-    xrandrCommands.append (QString ("xrandr --output %1 --size %2x%3\n")
-                           .arg (ui->DisplaysCombo->currentText())
-                           .arg (width)
-                           .arg (height));
-    xrandrCommands.append (QString ("xrandr --output %1 --scale %2x%2 "
-                                    "--panning %3x%4")
-                           .arg (ui->DisplaysCombo->currentText())
-                           .arg (multFactor)
-                           .arg (pWidth)
-                           .arg (pHeight));
+    QString xrandr;
+    xrandr.append (QString ("xrandr --output %1 --mode %2x%3 --scale %4x%4 "
+                            "--panning %5x%6")
+                   .arg (ui->DisplaysCombo->currentText())
+                   .arg (width)
+                   .arg (height)
+                   .arg (multFactor)
+                   .arg (pWidth)
+                   .arg (pHeight));
 
     // Add shebang
     QString script;
@@ -322,7 +320,7 @@ void MainWindow::generateScript (const qreal scale)
     script.append ("# Xrandr scaling hack, --panning is used in order to let\n"
                    "# the mouse navigate in all of the 'generated'\n"
                    "# screen space.\n");
-    script.append (xrandrCommands);
+    script.append (xrandr);
     script.append ("\n\n");
 
     // Echo code
