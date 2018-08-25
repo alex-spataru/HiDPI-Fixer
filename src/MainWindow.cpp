@@ -314,7 +314,11 @@ void MainWindow::generateScript (const qreal scale)
                    "# another DE environment.\n");
     script.append ("gsettings set org.gnome.desktop.interface scaling-factor ");
     script.append (QString::number (factor));
-    script.append ("\n\n");
+    script.append ("\n");
+    script.append ("gsettings set org.gnome.settings-daemon.plugins.xsettings overrides ");
+    script.append ("\"{'Gdk/WindowScalingFactor': <");
+    script.append (QString::number (factor));
+    script.append (">}\"\n\n");
 
     // Xrandr code
     script.append ("# Xrandr scaling hack, --panning is used in order to let\n"
