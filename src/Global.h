@@ -29,7 +29,7 @@
 /**
  * Define application information
  */
-static const QString APP_VERSION = "1.1";
+static const QString APP_VERSION = "1.2";
 static const QString APP_NAME = "HiDPI Fixer";
 
 /**
