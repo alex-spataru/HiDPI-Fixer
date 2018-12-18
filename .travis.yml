@@ -10,7 +10,7 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get install -qq qt53base; source /opt/qt53/bin/qt53-env.sh
+  - sudo apt-get install -qq qt53base qt53x11extras; source /opt/qt53/bin/qt53-env.sh
 
 script:
   - qmake -v
