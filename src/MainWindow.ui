@@ -107,6 +107,9 @@
        <item>
         <widget class="QComboBox" name="DisplaysCombo"/>
        </item>
+       <item>
+        <widget class="QComboBox" name="ResolutionsComboBox"/>
+       </item>
       </layout>
      </widget>
     </item>

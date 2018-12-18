@@ -64,10 +64,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
              this,                      SLOT (close()));
     connect (ui->CloseButton,         SIGNAL (clicked()),
              this,                      SLOT (close()));
+    connect (ui->DisplaysCombo,       SIGNAL (currentIndexChanged (int)),
+             this,                      SLOT (updateResolutionCombo (int)));
     connect (ui->ScaleFactor,         SIGNAL (valueChanged (double)),
              this,                      SLOT (generateScript (double)));
     connect (ui->ScriptPreview,       SIGNAL (textChanged()),
              this,                      SLOT (updateScriptExecControls()));
+    connect (ui->ResolutionsComboBox, SIGNAL (currentIndexChanged (int)),
+             this,                      SLOT (updateScript (int)));
     connect (ui->DisplaysCombo,       SIGNAL (currentIndexChanged (int)),
              this,                      SLOT (updateScript (int)));
     connect (ui->TestButton,          SIGNAL (clicked()),
@@ -79,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect (ui->ReportBugMenu,       SIGNAL (triggered()),
              this,                      SLOT (reportBugs()));
     connect (ui->AboutQtMenu,         SIGNAL (triggered()),
-             qApp,                      SLOT (aboutQt()));
+             qApp, SLOT (aboutQt()));
 
     // Populate controls
     ui->ScriptPreview->setPlainText ("");
@@ -256,8 +260,24 @@ void MainWindow::generateScript (const qreal scale)
         return;
     }
 
+    // Check if current selected resolution is valid
+    QStringList size = ui->ResolutionsComboBox->currentText().split ("x");
+    if (size.count() != 2) {
+        qWarning() << "Invalid resolution"
+                   << ui->ResolutionsComboBox->currentText();
+        QMessageBox::warning (this,
+                              tr ("Error"),
+                              tr ("Invalid resolution \"%1\"!")
+                              .arg (ui->ResolutionsComboBox->currentText()));
+        return;
+    }
+
+    // Get resolution width and height
+    QSize res;
+    res.setWidth(size.at(0).toInt());
+    res.setHeight(size.at(1).toInt());
+
     // Get target resolution
-    QSize res = XrandrPrefferedResolution(ui->DisplaysCombo->currentIndex());
     int width = static_cast<int>(ceil(res.width() * multFactor));
     int height = static_cast<int>(ceil(res.height() * multFactor));
 
@@ -365,4 +385,14 @@ int MainWindow::saveAndExecuteScript (const QString& location) {
 
     // Notify caller that everything is OK
     return 0;
+}
+
+/**
+ * Updates the resolutions ComboBox when the user selects
+ * another display
+ */
+void MainWindow::updateResolutionCombo (const int index)
+{
+    ui->ResolutionsComboBox->clear();
+    ui->ResolutionsComboBox->addItems (XrandrGetAvailableResolutions (index));
 }
