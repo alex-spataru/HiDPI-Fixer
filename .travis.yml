@@ -8,7 +8,7 @@ before_install:
  - sudo apt update -qq
 
 install:
- - sudo apt install -y --force--yes qt5-default libqt5x11extras5-dev build-essential
+ - sudo apt install -y --force-yes qt5-default libqt5x11extras5-dev build-essential
 
 script:
  - mkdir build
