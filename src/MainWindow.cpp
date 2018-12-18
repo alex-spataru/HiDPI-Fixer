@@ -239,7 +239,9 @@ void MainWindow::updateScriptExecControls()
  */
 void MainWindow::updateScript (const int unused) {
     (void) unused;
-    generateScript (ui->ScaleFactor->value());
+
+    if (ui->ResolutionsComboBox->count() > 0)
+        generateScript (ui->ScaleFactor->value());
 }
 
 /**
