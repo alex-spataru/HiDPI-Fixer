@@ -1,21 +1,22 @@
 language: cpp
-compiler: gcc
 
+os: linux
 dist: trusty
 sudo: required
+compiler: gcc
 
 before_install:
- - sudo apt-get update -qq
+  - sudo add-apt-repository ppa:beineri/opt-qt532-trusty -y
+  - sudo apt-get update -qq
 
 install:
- - sudo apt-get install -y build-essential
- - sudo apt-get install -y qt5-default libqt5x11extras5-dev
- - sudo apt-get install -y qtbase5-dev libqt5gui5 qttools5-dev-tools qttools5-dev
+  - sudo apt-get install -qq qt53base; source /opt/qt53/bin/qt53-env.sh
+  - sudo apt-get install -qq qt55base; source /opt/qt55/bin/qt55-env.sh
 
 script:
- - mkdir build
- - cd build
- - qmake --version
- - qmake -qt=qt5 ../HiDPI-Fixer.pro
- - make -j4
- - sudo make install
+  - qmake -v
+  - qmake -r
+  - make -j4
+
+notifications:
+  email: false
