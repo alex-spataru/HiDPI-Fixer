@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     font.setPixelSize (10);
     font.setFamily ("Monospace");
     ui->ScriptPreview->setFont (font);
-    ui->ScriptPreview->setMinimumWidth (360);
+    ui->ScriptPreview->setMinimumWidth (390);
     ui->ScriptPreview->setMinimumHeight (120);
 
     // Resize window to minimum size
@@ -64,14 +64,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
              this,                      SLOT (close()));
     connect (ui->CloseButton,         SIGNAL (clicked()),
              this,                      SLOT (close()));
-    connect (ui->DisplaysCombo,       SIGNAL (currentIndexChanged (int)),
-             this,                      SLOT (updateResolutionCombo (int)));
     connect (ui->ScaleFactor,         SIGNAL (valueChanged (double)),
              this,                      SLOT (generateScript (double)));
     connect (ui->ScriptPreview,       SIGNAL (textChanged()),
              this,                      SLOT (updateScriptExecControls()));
-    connect (ui->ResolutionsComboBox, SIGNAL (currentIndexChanged (int)),
-             this,                      SLOT (updateScript (int)));
     connect (ui->DisplaysCombo,       SIGNAL (currentIndexChanged (int)),
              this,                      SLOT (updateScript (int)));
     connect (ui->TestButton,          SIGNAL (clicked()),
@@ -80,8 +76,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
              this,                      SLOT (saveScript()));
     connect (ui->SaveScriptMenu,      SIGNAL (triggered()),
              this,                      SLOT (saveScript()));
-    connect (ui->WaitTime,            SIGNAL (valueChanged (int)),
-             this,                      SLOT (updateScript (int)));
     connect (ui->ReportBugMenu,       SIGNAL (triggered()),
              this,                      SLOT (reportBugs()));
     connect (ui->AboutQtMenu,         SIGNAL (triggered()),
@@ -237,7 +231,7 @@ void MainWindow::updateScriptExecControls()
 
 /**
  * Dummy function, used to re-generate the script when the
- * user changes the display and/or the resolution
+ * user changes the display
  */
 void MainWindow::updateScript (const int unused) {
     (void) unused;
@@ -262,82 +256,47 @@ void MainWindow::generateScript (const qreal scale)
         return;
     }
 
-    // Check if current selected resolution is valid
-    QStringList size = ui->ResolutionsComboBox->currentText().split ("x");
-    if (size.count() != 2) {
-        qWarning() << "Invalid resolution"
-                   << ui->ResolutionsComboBox->currentText();
-        QMessageBox::warning (this,
-                              tr ("Error"),
-                              tr ("Invalid resolution \"%1\"!")
-                              .arg (ui->ResolutionsComboBox->currentText()));
+    // Get target resolution
+    QSize res = XrandrPrefferedResolution(ui->DisplaysCombo->currentIndex());
+    int width = static_cast<int>(ceil(res.width() * multFactor));
+    int height = static_cast<int>(ceil(res.height() * multFactor));
+
+    // Get modeline, resolution name and display name
+    QString modeline = CvtGetModeline (width, height);
+    QString resName = CvtGetResolutionName (modeline);
+    QString dispName = ui->DisplaysCombo->currentText();
+
+    // Validate modeline and resName
+    if (modeline.isEmpty()) {
+        ui->ScriptPreview->clear();
+        ui->ScriptPreview->setPlainText("# Error :(\n");
         return;
     }
 
-    // Get resolution width and height
-    int width = size.at (0).toInt();
-    int height = size.at (1).toInt();
-
-    // Calculate panning
-    int pWidth = static_cast<int>(ceil (width * multFactor));
-    int pHeight = static_cast<int>(ceil (height * multFactor));
-
-    // Construct xrandr command
-    QString xrandr;
-    xrandr.append (QString ("xrandr --output %1 --mode %2x%3 --scale %4x%4 "
-                            "--panning %5x%6")
-                   .arg (ui->DisplaysCombo->currentText())
-                   .arg (width)
-                   .arg (height)
-                   .arg (multFactor)
-                   .arg (pWidth)
-                   .arg (pHeight));
-
-    // Add shebang
+    // Create script
     QString script;
-    script.append ("#!/bin/bash\n\n");
+    script.append("#!/bin/bash\n\n");
+    script.append("# THIS SCRIPT COMES WITH NO WARRANTIES, USE IT AT YOUR\n"
+                  "# OWN RISK\n\n");
 
-    // Wait time (to apply changes after GNOME)
-    script.append ("# Wait some seconds before applying changes\n");
-    script.append ("sleep " + QString::number (ui->WaitTime->value()));
-    script.append ("\n\n");
+    // Create new resolution
+    script.append("# Create new resolution\n");
+    script.append(QString("xrandr --newmode %1\n\n").arg(modeline));
 
-    // Enable rotation lock (to avoid ugly shit when rotating the screen)
-    script.append ("# Enable rotation lock  to avoid issues with xrandr.\n");
-    script.append ("gsettings set "
-                   "org.gnome.settings-daemon.peripherals.touchscreen "
-                   "orientation-lock true");
-    script.append ("\n\n");
+    // Register resolution with current display
+    script.append(QString("# Register resolution with %1\n").arg(dispName));
+    script.append(QString("xrandr --addmode %1 %2\n\n").arg(dispName).arg(resName));
 
-    // Set GNOME scaling factor (int)
-    script.append ("# Set GNOME's scaling factor. Modify this if using\n"
-                   "# another DE environment.\n");
-    script.append ("gsettings set org.gnome.desktop.interface scaling-factor ");
-    script.append (QString::number (factor));
-    script.append ("\n");
-    
-    // Xrandr code
-    script.append ("# Xrandr scaling hack, --panning is used in order to let\n"
-                   "# the mouse navigate in all of the 'generated'\n"
-                   "# screen space.\n");
-    script.append (xrandr);
-    script.append ("\n\n");
+    // Change resolution for current display
+    script.append(QString("# Change resolution for %1\n").arg(dispName));
+    script.append(QString("xrandr --output %1 --mode %2\n\n").arg(dispName).arg(resName));
 
-    // Echo code
-    script.append ("echo \"Script finished execution\"\n");
+    // Set scaling factor (GNOME)
+    script.append("# Change scaling factor (GNOME)\n");
+    script.append(QString("gsettings set org.gnome.desktop.interface scaling-factor %1\n").arg(factor));
 
     // Update controls
-    ui->ScriptPreview->setPlainText (script);
-}
-
-/**
- * Updates the resolutions ComboBox when the user selects
- * another display
- */
-void MainWindow::updateResolutionCombo (const int index)
-{
-    ui->ResolutionsComboBox->clear();
-    ui->ResolutionsComboBox->addItems (XrandrGetAvailableResolutions (index));
+    ui->ScriptPreview->setPlainText(script);
 }
 
 /**

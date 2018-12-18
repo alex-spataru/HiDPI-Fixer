@@ -43,7 +43,6 @@ private slots:
     void updateScriptExecControls();
     void updateScript (const int unused);
     void generateScript (const qreal scale);
-    void updateResolutionCombo (const int index);
 
 private:
     int saveAndExecuteScript (const QString& location);

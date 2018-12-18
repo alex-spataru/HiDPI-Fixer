@@ -23,9 +23,12 @@
 #ifndef XRANDR_BRIDGE_H
 #define XRANDR_BRIDGE_H
 
+#include <QSize>
 #include <QStringList>
 
 extern QStringList XrandrGetAvailableDisplays();
-extern QStringList XrandrGetAvailableResolutions (const int display);
+extern QString CvtGetModeline (const int w, const int h);
+extern QSize XrandrPrefferedResolution (const int display);
+extern QString CvtGetResolutionName (const QString modeline);
 
 #endif

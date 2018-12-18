@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- 
+
 #include <QDebug>
 #include <QObject>
 #include <QProcess>
@@ -92,49 +92,97 @@ QStringList XrandrGetAvailableDisplays() {
 }
 
 /**
- * Returns a list with the available resolutions reported
- * by the xrandr-process for the given display
+ * Returns the modeline string needed to create a resolution
+ * with a width of @a w and a height of @h
  */
-QStringList XrandrGetAvailableResolutions (const int display) {
-    Q_ASSERT (display >= 0);
+QString CvtGetModeline(const int w, const int h) {
+    Q_ASSERT (w > 0);
+    Q_ASSERT (h > 0);
 
-    // Try to run xrandr --screen $display
+    // Create arguments
+    QStringList arguments;
+    arguments.append(QString::number(w));
+    arguments.append(QString::number(h));
+
+    // Create process
     QProcess process;
-    QStringList arguments = {"--screen", QString::number (display)};
-    process.start ("xrandr", arguments);
-    process.waitForFinished (1000);
+    process.start("cvt", arguments);
+    process.waitForFinished(1000);
 
     // If process fails, abort
-    if (process.exitCode() != 0) {
+    if (process.exitCode()!= 0) {
         QMessageBox::warning (
                     Q_NULLPTR,
                     QObject::tr ("Error"),
-                    QObject::tr ("Cannot run xrandr --screen %1").arg (display));
+                    QObject::tr ("Cannot execute cvt %1 %2").arg(w).arg(h));
         qWarning() << Q_FUNC_INFO
-                   << "xrandr returned exit code"
+                   << "cvt returned exit code"
                    << process.exitCode();
-        return QStringList();
+        return "";
     }
 
     // Get process output
     QString output = QString (process.readAllStandardOutput());
 
-    // Get resolutions
-    QStringList resolutions;
-    QRegExp rx ("([0-9])+x+([0-9]*)+     ");
-    while (output.contains (rx)) {
-        // Get index of match
-        int pos = rx.indexIn (output);
+    // Get modeline (construct string backwards until we find two '"' chars)
+    QString modeline;
+    int quoteCount = 0;
+    int pos = output.length();
+    while (pos > 0 && quoteCount < 2) {
+        --pos;
 
-        // Add match to resolutions (and avoid duplicates)
-        if (!rx.capturedTexts().isEmpty())
-            if (!resolutions.contains (rx.capturedTexts().first()))
-                resolutions.append (rx.capturedTexts().first());
+        if (output.at(pos) == '"')
+            ++quoteCount;
 
-        // Remove match from original string
-        output.remove (pos, resolutions.last().length());
+        modeline.append(output.at (pos));
     }
 
-    // Return obtained resolutions
-    return resolutions;
+    // Invert modeline string
+    QString copy = modeline;
+    modeline.clear();
+    for (int i = 0; i < copy.length(); ++i)
+        modeline.append(copy.at (copy.length() - 1 - i));
+
+    // Return modeline
+    return modeline;
+}
+
+/**
+ * Returns the preffered resolution of the given display
+ */
+QSize XrandrPrefferedResolution (const int display) {
+    Q_ASSERT (XrandrGetAvailableDisplays().count() > display);
+
+    // Get display name
+    QString dispName = XrandrGetAvailableDisplays().at (display);
+
+    // Get preferred resolution [TODO]
+    QSize res;
+    res.setWidth(1920);
+    res.setHeight(1080);
+
+    // Return resolution size
+    return res;
+}
+
+/**
+ * Returns the resolution name/mode for the given @a modeline
+ */
+QString CvtGetResolutionName (const QString modeline) {
+    Q_ASSERT (!modeline.isEmpty());
+
+    // Construct resulution name (append to string until two '"' chars are found)
+    QString name;
+    int pos = 0;
+    int quoteCharCount = 0;
+    while (quoteCharCount < 2 && pos < modeline.length()) {
+        if (modeline.at(pos) == '"')
+            ++quoteCharCount;
+
+        name.append(modeline.at(pos));
+        ++pos;
+    }
+
+    // Return result
+    return name;
 }
