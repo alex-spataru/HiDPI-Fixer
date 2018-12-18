@@ -1,11 +1,13 @@
-# HiDPI Fixer for GNOME-based desktops
+# HiDPI Fixer
+
+![Build Status](https://api.travis-ci.org/alex-spataru/HiDPI-Fixer.svg?branch=master)
 
 This application allows you to create a script that acomplishes the following tasks:
 - Allow fractional scaling of your display and its components in X11
 - The end result looks nicer and is way less buggy than using Wayland
 - The generated script is configured to run everytime you log in
-- To avoid "race" conditions with GNOME-Settings, you can delay the execution of the script
 - You can also instruct the application to modify the `~/.profile` file to correctly scale Qt-based apps (as KDE does)
+- Tested on GNOME, Deepin Desktop and KDE (you need to manualy set the scaling factor to 200% in Deepin and KDE)
 
 ## Installing/running
 
