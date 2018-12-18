@@ -23,7 +23,6 @@
 #ifndef XRANDR_BRIDGE_H
 #define XRANDR_BRIDGE_H
 
-#include <QSize>
 #include <QStringList>
 
 extern QStringList XrandrGetAvailableDisplays();

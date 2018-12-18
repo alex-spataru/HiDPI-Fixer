@@ -283,24 +283,6 @@ QString CvtGetModeline(const int w, const int h) {
 }
 
 /**
- * Returns the preffered resolution of the given display
- */
-QSize XrandrPrefferedResolution (const int display) {
-    Q_ASSERT (XrandrGetAvailableDisplays().count() > display);
-
-    // Get display name
-    QString dispName = XrandrGetAvailableDisplays().at (display);
-
-    // Get preferred resolution [TODO]
-    QSize res;
-    res.setWidth(1920);
-    res.setHeight(1080);
-
-    // Return resolution size
-    return res;
-}
-
-/**
  * Returns the resolution name/mode for the given @a modeline
  */
 QString CvtGetResolutionName (const QString modeline) {
