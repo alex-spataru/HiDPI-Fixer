@@ -1,0 +1,18 @@
+language: cpp
+compiler: gcc
+
+dist: trusty
+sudo: required
+
+before_install:
+ - sudo apt update -qq
+
+install:
+ - sudo apt install -y --force--yes qt5-default libqt5x11extras5-dev build-essential
+
+script:
+ - mkdir build
+ - cd build
+ - qmake -qt=qt5 ../HiDPI-Fixer.pro
+ - make -j4
+ - sudo make install
