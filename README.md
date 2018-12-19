@@ -32,7 +32,9 @@ All directories and files that HiDPI Fixer removes will be listed in the termina
 
 ## How does it work?
 
-This application uses a combination of GNOME's `scaling-factor` setting and `xrandr` commands. Basically, the application calculates the necessary resolution to obtain the desired scaling factor and registers a new resolution with Xrandr. These commands are saved into a `*.sh` file for every display that you have and are configured to run at startup. 
+This application uses a combination of GNOME's `scaling-factor` setting and `xrandr` commands. Basically, the application calculates the necessary resolution to obtain the desired scaling factor and registers a new resolution with `xrandr`. These commands are saved into a `*.sh` file for every display that you have and are configured to run at startup. 
+
+HiDPI-Fixer also works with DEs other than GNOME, however, you will need to manually set the scaling factor to 200% in the control center application of your desktop environment.
 
 ## License
 
