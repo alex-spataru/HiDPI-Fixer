@@ -10,8 +10,8 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get install -qq qt510base qt510x11extras
-  - source /opt/qt510/bin/qt510-env.s
+  - sudo apt-get install -qq qt510base qt510x11extras qt510svg
+  - source /opt/qt510/bin/qt510-env.sh
 
 script:
   - qmake CONFIG+=release PREFIX=/usr
