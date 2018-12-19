@@ -298,8 +298,6 @@ void MainWindow::generateScript (const qreal scale)
     // Create script
     QString script;
     script.append("#!/bin/bash\n\n");
-    script.append("# THIS SCRIPT COMES WITH NO WARRANTIES, USE IT AT YOUR\n"
-                  "# OWN RISK\n\n");
 
     // Create new resolution
     script.append("# Create new resolution\n");
