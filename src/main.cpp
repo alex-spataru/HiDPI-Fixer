@@ -30,13 +30,13 @@
  * \param argc Argument count
  * \param argv Argument data
  */
-int main (int argc, char **argv)
+int main(int argc, char **argv)
 {
-    QApplication app (argc, argv);
-    app.setApplicationName (APP_NAME);
-    app.setApplicationVersion (APP_VERSION);
+    QApplication app(argc, argv);
+    app.setApplicationName(APP_NAME);
+    app.setApplicationVersion(APP_VERSION);
 
-    if (StartupVerifications (argc, argv)) {
+    if (StartupVerifications(argc, argv)) {
         MainWindow window;
         window.show();
 

@@ -73,7 +73,7 @@ QStringList XrandrGetAvailableDisplays() {
     // Get name of each monitor
     QStringList displays;
     for (int i = 1; i <= monitorCount; ++i) {
-        QStringList monitorInfo = lines.at(i).split (" ");
+        QStringList monitorInfo = lines.at(i).split (QChar(' '));
         displays.append (monitorInfo.last());
     }
 
@@ -155,7 +155,7 @@ QStringList XrandrGetAvailableResolutions (const int display) {
             int pos = 0;
             QString name;
             QString displayDetails = usefulInformation.at(i);
-            while (displayDetails.at(pos) != " ") {
+            while (displayDetails.at(pos) != QChar(' ')) {
                 name.append(displayDetails.at(pos));
                 ++pos;
             }
@@ -210,7 +210,7 @@ QStringList XrandrGetAvailableResolutions (const int display) {
     QStringList validatedResolutions;
     for (int i = 0; i < resolutions.count(); ++i) {
         // Check if resolution string is valid (<width>x<height>)
-        QStringList size = resolutions.at(i).split("x");
+        QStringList size = resolutions.at(i).split('x');
         if (size.count() == 2) {
             // Get resolution size
             int w = size.at(0).toInt();

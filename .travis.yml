@@ -10,12 +10,14 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get install -qq qt53base qt53x11extras; source /opt/qt53/bin/qt53-env.sh
+  - sudo apt-get install -qq qt53base qt53x11extras
+  - source /opt/qt53/bin/qt53-env.sh
 
 script:
-  - qmake -v
-  - qmake -r
-  - make -j4
+  - mkdir build
+  - cd build
+  - qmake ../HiDPI-Fixer.pro
+  - make -j$(nproc)
 
 notifications:
   email: false
