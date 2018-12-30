@@ -36,6 +36,11 @@ This application uses a combination of GNOME's `scaling-factor` setting and `xra
 
 HiDPI-Fixer also works with DEs other than GNOME, however, you will need to manually set the scaling factor to 200% in the control center application of your desktop environment.
 
+## Friendly Tips
+
+- Some applications such as WPS Office ignore completely the system's DPI setting (and don't even have an option to change their scale factor). Given that `HiDPI-Fixer` creates a very large resolution, it may be almost impossible to use fixed-DPI applications. If you rely on those applications, you can run them with (`run_scaled`)[https://github.com/kaueraal/run_scaled/], resulting in an usable, albeit blurry per-application experience.
+- In some cases, `xrandr` will not let you to use resolutions larger than your screen's native resolution, which results in the rather-cryptic `BAD MATCH` error. If you have any idea how to fix this, please contact me or make a PR. 
+
 ## License
 
 This project is released under the MIT license, for more info, click [here](LICENSE.md).
