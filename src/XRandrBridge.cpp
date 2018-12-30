@@ -278,6 +278,9 @@ QString CvtGetModeline(const int w, const int h) {
     for (int i = 0; i < copy.length(); ++i)
         modeline.append(copy.at (copy.length() - 1 - i));
 
+    // Remove linebreak characters from modeline
+    modeline = modeline.replace(QChar('\n'), "");
+
     // Return modeline
     return modeline;
 }

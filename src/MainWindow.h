@@ -42,6 +42,7 @@ private slots:
     void reportBugs();
     void updateScriptExecControls();
     void updateScript (const int unused);
+    void updateScript (const bool unused);
     void generateScript (const qreal scale);
     void updateResolutionCombo (const int index);
 

@@ -14,7 +14,7 @@
    <string/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1,0,0">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,1,0,0">
     <item>
      <widget class="QWidget" name="widget" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
@@ -164,6 +164,13 @@
      </widget>
     </item>
     <item>
+     <widget class="QCheckBox" name="XrandrScale">
+      <property name="text">
+       <string>Use xrandr --scale instead of registering new resolution</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="label">
       <property name="text">
        <string>Script Preview:</string>
@@ -242,7 +249,7 @@
      <x>0</x>
      <y>0</y>
      <width>396</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="FileMenu">

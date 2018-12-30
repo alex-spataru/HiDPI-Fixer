@@ -68,6 +68,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
              this,                      SLOT (updateResolutionCombo (int)));
     connect (ui->ScaleFactor,         SIGNAL (valueChanged (double)),
              this,                      SLOT (generateScript (double)));
+    connect (ui->XrandrScale,         SIGNAL (toggled(bool)),
+             this,                      SLOT (updateScript(bool)));
     connect (ui->ScriptPreview,       SIGNAL (textChanged()),
              this,                      SLOT (updateScriptExecControls()));
     connect (ui->ResolutionsComboBox, SIGNAL (currentIndexChanged (int)),
@@ -245,6 +247,15 @@ void MainWindow::updateScript (const int unused) {
 }
 
 /**
+ * Dummy function, used to re-generate the script when the
+ * user toggles the xrandr --scale checkbox
+ */
+void MainWindow::updateScript (const bool unused) {
+    updateScript((int) unused);
+}
+
+
+/**
  * Generates a script that uses xrandr to resize the
  * contents of the screen to the given \a scale
  */
@@ -280,40 +291,78 @@ void MainWindow::generateScript (const qreal scale)
     res.setHeight(size.at(1).toInt());
 
     // Get target resolution
-    int width = static_cast<int>(ceil(res.width() * multFactor));
-    int height = static_cast<int>(ceil(res.height() * multFactor));
+    int targetWidth = static_cast<int>(ceil(res.width() * multFactor));
+    int targetHeight = static_cast<int>(ceil(res.height() * multFactor));
 
-    // Get modeline, resolution name and display name
-    QString modeline = CvtGetModeline (width, height);
-    QString resName = CvtGetResolutionName (modeline);
-    QString dispName = ui->DisplaysCombo->currentText();
-
-    // Validate modeline and resName
-    if (modeline.isEmpty()) {
-        ui->ScriptPreview->clear();
-        ui->ScriptPreview->setPlainText("# Error :(\n");
-        return;
-    }
-
-    // Create script
+    // Create script string with sh-bang
     QString script;
     script.append("#!/bin/bash\n\n");
 
-    // Create new resolution
-    script.append("# Create new resolution\n");
-    script.append(QString("xrandr --newmode %1\n\n").arg(modeline));
+    // Use xrandr --scale option
+    if (ui->XrandrScale->isChecked()) {
+        // Construct xrandr command
+        QString xrandrCmd;
+        xrandrCmd.append(QString("xrandr --output %1 --mode %2x%3 --scale %4x%4 "
+                                 "--panning %5x%6")
+                         .arg(ui->DisplaysCombo->currentText())
+                         .arg(res.width())
+                         .arg(res.height())
+                         .arg(multFactor)
+                         .arg(targetWidth)
+                         .arg(targetHeight));
 
-    // Register resolution with current display
-    script.append(QString("# Register resolution with %1\n").arg(dispName));
-    script.append(QString("xrandr --addmode %1 %2\n\n").arg(dispName).arg(resName));
+        // Wait time(to apply changes after GNOME loads up)
+        script.append("# Wait one second before applying changes\n");
+        script.append("sleep 1\n\n");
 
-    // Change resolution for current display
-    script.append(QString("# Change resolution for %1\n").arg(dispName));
-    script.append(QString("xrandr --output %1 --mode %2\n\n").arg(dispName).arg(resName));
+        // Enable rotation lock(to avoid ugly shit when rotating the screen)
+        script.append("# Enable rotation lock  to avoid issues with xrandr.\n");
+        script.append("gsettings set "
+                      "org.gnome.settings-daemon.peripherals.touchscreen "
+                      "orientation-lock true\n\n");
+
+        // Append xrandr --scale command
+        script.append("# Xrandr scaling hack, --panning is used in order to let\n"
+                      "# the mouse navigate in all of the 'generated'\n"
+                      "# screen space.\n");
+        script.append(xrandrCmd);
+        script.append("\n\n");
+    }
+
+    // Create custom resolution
+    else {
+        // Get modeline, resolution name and display name
+        QString modeline = CvtGetModeline (targetWidth, targetHeight);
+        QString resName = CvtGetResolutionName (modeline);
+        QString dispName = ui->DisplaysCombo->currentText();
+
+        // Validate modeline and resName
+        if (modeline.isEmpty()) {
+            ui->ScriptPreview->clear();
+            ui->ScriptPreview->setPlainText("# Error :(\n");
+            return;
+        }
+
+        // Create new resolution
+        script.append("# Create new resolution\n");
+        script.append(QString("xrandr --newmode %1\n\n").arg(modeline));
+
+        // Register resolution with current display
+        script.append(QString("# Register resolution with %1\n").arg(dispName));
+        script.append(QString("xrandr --addmode %1 %2\n\n").arg(dispName).arg(resName));
+
+        // Change resolution for current display
+        script.append(QString("# Change resolution for %1\n").arg(dispName));
+        script.append(QString("xrandr --output %1 --mode %2\n\n").arg(dispName).arg(resName));
+    }
 
     // Set scaling factor (GNOME)
     script.append("# Change scaling factor (GNOME)\n");
-    script.append(QString("gsettings set org.gnome.desktop.interface scaling-factor %1\n").arg(factor));
+    script.append(QString("gsettings set org.gnome.desktop.interface scaling-factor %1\n\n").arg(factor));
+
+    // Echo code
+    script.append("# Confirm script execution\n");
+    script.append("echo \"Script finished execution\"\n");
 
     // Update controls
     ui->ScriptPreview->setPlainText(script);
