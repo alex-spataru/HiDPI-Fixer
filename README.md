@@ -42,7 +42,7 @@ HiDPI-Fixer also works with DEs other than GNOME, however, you will need to manu
 - [ ] Integrate [`run_scaled`](https://github.com/kaueraal/run_scaled/) to HiDPI-Fixer, by creating custom `*.desktop` files in `./local/share/applications` to fix apps that refuse to do any scaling at all.
 - [ ] Instead of generating a startup script, allow users to apply the changes system wide.
 
-Contributions and less-ugly fixes are welcome :octocat:!
+Contributions and less-ugly fixes are welcome :octocat:
 
 ## Tips
 
