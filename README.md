@@ -10,7 +10,7 @@ This application allows you to create a script that acomplishes the following ta
 
 ## Screenshot
 
-[Screenshot of HiDPI-Fixer running under Manjaro Deepin](etc/screenshot.png) 
+![Screenshot of HiDPI-Fixer running under Manjaro Deepin](etc/screenshot.png) 
 
 ## Installing/running
 
