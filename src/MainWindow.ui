@@ -164,16 +164,16 @@
      </widget>
     </item>
     <item>
-     <widget class="QCheckBox" name="XrandrScale">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>Use xrandr --scale instead of registering new resolution</string>
+       <string>Script Preview:</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QCheckBox" name="XrandrScale">
       <property name="text">
-       <string>Script Preview:</string>
+       <string>Use xrandr --scale instead of registering new resolution</string>
       </property>
      </widget>
     </item>

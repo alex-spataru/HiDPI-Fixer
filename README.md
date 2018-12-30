@@ -1,5 +1,5 @@
 # HiDPI Fixer
-[![Build Status](https://api.travis-ci.org/alex-spataru/HiDPI-Fixer.svg?branch=master)](https://travis-ci.org/alex-spataru/HiDPI-Fixer) 
+[![Build Status](https://api.travis-ci.org/alex-spataru/HiDPI-Fixer.svg?branch=master)](https://travis-ci.org/alex-spataru/HiDPI-Fixer)
 
 This application allows you to create a script that acomplishes the following tasks:
 - Allow fractional scaling of your display and its components in X11
@@ -7,6 +7,10 @@ This application allows you to create a script that acomplishes the following ta
 - The generated script is configured to run everytime you log in
 - You can also instruct the application to modify the `~/.profile` file to correctly scale Qt-based apps (as KDE does)
 - Tested on GNOME, Deepin Desktop and KDE (you need to manualy set the scaling factor to 200% in Deepin and KDE)
+
+## Screenshot
+
+[Screenshot of HiDPI-Fixer running under Manjaro Deepin](etc/screenshot.png) 
 
 ## Installing/running
 
