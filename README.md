@@ -1,4 +1,9 @@
+<a href="#">
+    <img width="192px" height="192px" src="https://upload.wikimedia.org/wikipedia/commons/a/ab/X11.png" align="right" />
+</a>
+
 # HiDPI Fixer
+
 [![Build Status](https://api.travis-ci.org/alex-spataru/HiDPI-Fixer.svg?branch=master)](https://travis-ci.org/alex-spataru/HiDPI-Fixer)
 
 This application allows you to create a script that acomplishes the following tasks:
