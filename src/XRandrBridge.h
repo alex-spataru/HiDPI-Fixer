@@ -26,9 +26,9 @@
 #include <QStringList>
 
 extern QStringList XrandrGetAvailableDisplays();
-extern QStringList XrandrGetAvailableResolutions (const int display);
+extern QStringList XrandrGetAvailableResolutions(const int display);
 
-extern QString CvtGetModeline (const int w, const int h);
-extern QString CvtGetResolutionName (const QString modeline);
+extern QString CvtGetModeline(const int w, const int h);
+extern QString CvtGetResolutionName(const QString modeline);
 
 #endif

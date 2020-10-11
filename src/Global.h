@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- 
+
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
@@ -35,12 +35,12 @@ static const QString APP_NAME = "HiDPI Fixer";
 /**
  * Defines the folder in which the HiDPI-Fixer scripts are stored
  */
-static const QString SCRIPTS_HOME = QString ("%1/.hidpi-fixer").arg (QDir::homePath());
+static const QString SCRIPTS_HOME = QString("%1/.hidpi-fixer").arg(QDir::homePath());
 
 /**
  * Defines the file location and name pattern for startup scripts
  */
 static const QString AUTOSTART_PATTERN = "HiDPI-Fixer_";
-static const QString AUTOSTART_LOCATION = QString ("%1/.config/autostart").arg (QDir::homePath());
+static const QString AUTOSTART_LOCATION = QString("%1/.config/autostart").arg(QDir::homePath());
 
 #endif

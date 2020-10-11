@@ -23,6 +23,6 @@
 #ifndef ARGUMENTS_H
 #define ARGUMENTS_H
 
-extern bool StartupVerifications (int argc, char** argv);
+extern bool StartupVerifications(int argc, char **argv);
 
 #endif
