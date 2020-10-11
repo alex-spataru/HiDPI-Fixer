@@ -34,13 +34,14 @@ TARGET = HiDPI-Fixer
 QT += gui
 QT += core
 QT += widgets
-QT += x11extras
 
 #-------------------------------------------------------------------------------
 # Deploy config
 #-------------------------------------------------------------------------------
 
 linux:!android {
+    QT += x11extras
+
     target.path = /usr/bin
     icon.path = /usr/share/pixmaps
     desktop.path = /usr/share/applications

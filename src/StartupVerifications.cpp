@@ -22,9 +22,13 @@
 
 #include <QDir>
 #include <QDebug>
-#include <QX11Info>
+#include <QProcess>
 #include <QMessageBox>
 #include <QDirIterator>
+
+#ifdef Q_OS_LINUX
+#include <QX11Info>
+#endif
 
 #include "Global.h"
 #include "StartupVerifications.h"
@@ -82,6 +86,15 @@ bool StartupVerifications (int argc, char** argv) {
                              << ".";
             }
         }
+        
+        // Reset GNOME scaling factor
+        QProcess process;
+        const QStringList args = QStringList {
+            "reset",
+            "org.gnome.desktop.interface",
+            "scaling-factor"
+        };
+        process.start("gsettings", arguments);
 
         // Notify user
         qDebug() << "Uninstall finished, have a nice day!";
@@ -118,6 +131,7 @@ bool StartupVerifications (int argc, char** argv) {
 
     // Check that an XServer is running (we do this check last, so that
     // the user can uninstall on any display server)
+#ifdef Q_OS_LINUX
     if (!QX11Info::isPlatformX11()) {
         QMessageBox::warning (Q_NULLPTR,
                               QObject::tr ("Warning"),
@@ -125,6 +139,7 @@ bool StartupVerifications (int argc, char** argv) {
                                            "on an X11 instance!"));
         return false;
     }
+#endif
 
     // So far, so good!
     return true;
