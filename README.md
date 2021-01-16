@@ -4,7 +4,8 @@
 
 # HiDPI Fixer
 
-[![Build Status](https://api.travis-ci.org/alex-spataru/HiDPI-Fixer.svg?branch=master)](https://travis-ci.org/alex-spataru/HiDPI-Fixer)
+[![Build Status (Travis CI)](https://api.travis-ci.org/alex-spataru/HiDPI-Fixer.svg?branch=master)](https://travis-ci.org/alex-spataru/HiDPI-Fixer)
+[![Build Status (GitHub Actions)](https://github.com/alex-spataru/HiDPI-Fixer/workflows/Build/badge.svg)](https://github.com/alex-spataru/HiDPI-Fixer/actions/)
 
 This application allows you to create a script that acomplishes the following tasks:
 - Allow fractional scaling of your display and its components in X11
