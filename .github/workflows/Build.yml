@@ -1,0 +1,90 @@
+#--------------------------------------------------------------------------------
+# Workflow configuration
+#--------------------------------------------------------------------------------
+
+name: Build
+on:
+  push:               # Run on push
+    paths-ignore:     # File patterns to ignore
+    - '**.md'         # Ignore changes to *.md files
+    
+  pull_request:       # Run on pull-request
+    paths-ignore:     # File-patterns to ignore
+    - '**.md'         # Ignore changes to *.md files
+
+#--------------------------------------------------------------------------------
+# Define application name & version
+#--------------------------------------------------------------------------------
+
+env:
+  VERSION: "1.4.0"
+  EXECUTABLE: "hidpi-fixer"
+  APPLICATION: "HiDPI-Fixer"
+  QMAKE_PROJECT: "HiDPI-Fixer.pro"
+
+#--------------------------------------------------------------------------------
+# Workflow jobs (GNU/Linux only)
+#--------------------------------------------------------------------------------
+
+jobs:
+  #
+  # GNU/Linux build (we run on Ubuntu 16.04 to generate AppImage)
+  #
+  build-linux:
+    runs-on: ubuntu-16.04
+    steps:
+      #
+      # Checkout the repository
+      #
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      #
+      # Install Qt
+      #
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          modules: qtcharts
+          
+      #
+      # Install additional dependencies, stolen from:
+      # https://github.com/mapeditor/tiled/blob/master/.github/workflows/packages.yml
+      #
+      - name: Install dependencies
+        run: |
+             sudo apt-get update
+             sudo apt-get install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
+        
+      #
+      # Compile the application
+      #
+      - name: Compile
+        run: |
+             qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
+             make -j8
+             
+      #
+      # Create the AppImage
+      #
+      - name: Create AppImage
+        run: | 
+             make INSTALL_ROOT=appdir install
+             wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
+             chmod a+x linuxdeployqt
+             ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
+     
+      #
+      # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
+      #
+      - name: Rename AppImage
+        run: mv *.AppImage ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
+        
+      #
+      # Upload AppImage to build artifacts
+      #
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
+          path: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
