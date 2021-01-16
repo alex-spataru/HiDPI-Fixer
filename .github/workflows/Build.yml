@@ -75,10 +75,10 @@ jobs:
              ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
      
       #
-      # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
+      # Rename AppImage to match a consistent format
       #
       - name: Rename AppImage
-        run: mv *.AppImage ${{env.APPLICATION}}-${{env.VERSION}}-Linux.AppImage
+        run: mv *.AppImage ${{env.APPLICATION}}_${{env.VERSION}}.AppImage
         
       #
       # Upload AppImage to build artifacts
