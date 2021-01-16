@@ -78,7 +78,7 @@ jobs:
       # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
       #
       - name: Rename AppImage
-        run: mv *.AppImage ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
+        run: mv *.AppImage ${{env.APPLICATION}}-${{env.VERSION}}-Linux.AppImage
         
       #
       # Upload AppImage to build artifacts
@@ -86,5 +86,5 @@ jobs:
       - name: Upload AppImage
         uses: actions/upload-artifact@v2
         with:
-          name: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
-          path: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
+          name: ${{env.APPLICATION}}_${{env.VERSION}}.AppImage
+          path: ${{env.APPLICATION}}_${{env.VERSION}}.AppImage
