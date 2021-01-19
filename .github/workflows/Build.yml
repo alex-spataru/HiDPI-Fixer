@@ -38,6 +38,16 @@ jobs:
       #
       - name: Checkout repository
         uses: actions/checkout@v2
+      
+      #
+      # Cache Qt
+      #
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: ../Qt
+          key: ${{runner.os}}-QtCache
 
       #
       # Install Qt
@@ -46,6 +56,8 @@ jobs:
         uses: jurplel/install-qt-action@v2
         with:
           modules: qtcharts
+          mirror: http://mirrors.ocf.berkeley.edu/qt/
+          cached: ${{steps.cache-qt.outputs.cache-hit}}
           
       #
       # Install additional dependencies, stolen from:
