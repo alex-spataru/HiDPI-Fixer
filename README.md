@@ -16,9 +16,9 @@ This application allows you to create a script that accomplishes the following t
 
 ## Screenshot
 
-![Screenshot of HiDPI-Fixer](etc/screenshot.png)
+<img width="100%" src="etc/screenshot.png"/>
 
-**Note:** sorry for the screenshot on Wayland. I haven't really used this tool lately, but I felt the need of updating this repo after 2 years...
+**Note:** sorry for the screenshot taken under Wayland. I haven't really used this tool lately, but I felt the need of updating this repo after 2 years...
 
 ## Installing/running
 
