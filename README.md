@@ -4,20 +4,21 @@
 
 # HiDPI Fixer
 
-[![Build Status (Travis CI)](https://api.travis-ci.org/alex-spataru/HiDPI-Fixer.svg?branch=master)](https://travis-ci.org/alex-spataru/HiDPI-Fixer)
 [![Build Status (GitHub Actions)](https://github.com/alex-spataru/HiDPI-Fixer/workflows/Build/badge.svg)](https://github.com/alex-spataru/HiDPI-Fixer/actions/)
 [![Github All Releases](https://img.shields.io/github/downloads/alex-spataru/HiDPI-Fixer/total.svg)](https://github.com/alex-spataru/HiDPI-Fixer/releases/)
 
-This application allows you to create a script that acomplishes the following tasks:
-- Allow fractional scaling of your display and its components in X11
-- The end result looks nicer and is way less buggy than using Wayland
-- The generated script is configured to run everytime you log in
-- You can also instruct the application to modify the `~/.profile` file to correctly scale Qt-based apps (as KDE does)
-- Tested on GNOME, Deepin Desktop and KDE (you need to manualy set the scaling factor to 200% in Deepin and KDE)
+This application allows you to create a script that accomplishes the following tasks:
+- Allow fractional scaling of your display and its components in X11.
+- The end result looks nicer and is way less buggy than using Wayland.
+- The generated script is configured to run every time you log in.
+- You can also instruct the application to modify the `~/.profile` file to scale Qt-based apps, use with caution.
+- Tested on GNOME, Deepin Desktop and KDE (you need to manually set the scaling factor to 200% in Deepin and KDE).
 
 ## Screenshot
 
-![Screenshot of HiDPI-Fixer running under Manjaro Deepin](etc/screenshot.png) 
+![Screenshot of HiDPI-Fixer](etc/screenshot.png)
+
+**Note:** sorry for the screenshot on Wayland. I haven't really used this tool lately, but I felt the need of updating this repo after 2 years...
 
 ## Installing/running
 

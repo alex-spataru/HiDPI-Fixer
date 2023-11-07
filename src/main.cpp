@@ -32,17 +32,17 @@
  */
 int main(int argc, char **argv)
 {
-   QApplication app(argc, argv);
-   app.setApplicationName(APP_NAME);
-   app.setApplicationVersion(APP_VERSION);
+    QApplication app(argc, argv);
+    app.setApplicationName(APP_NAME);
+    app.setApplicationVersion(APP_VERSION);
 
-   if (StartupVerifications(argc, argv))
-   {
-      MainWindow window;
-      window.show();
+    if (StartupVerifications(argc, argv))
+    {
+        MainWindow window;
+        window.show();
 
-      return app.exec();
-   }
+        return app.exec();
+    }
 
-   return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

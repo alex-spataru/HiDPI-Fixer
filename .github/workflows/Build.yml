@@ -20,7 +20,7 @@ env:
   VERSION: "1.4.0"
   EXECUTABLE: "HiDPI-Fixer"
   APPLICATION: "HiDPI-Fixer"
-  UNIXNAME: "hdpi-fixer"
+  UNIXNAME: "hidpi-fixer"
   QMAKE_PROJECT: "HiDPI-Fixer.pro"
   PUBLISHER: "Alex Spataru"
   QT_VERSION: 5.15.2

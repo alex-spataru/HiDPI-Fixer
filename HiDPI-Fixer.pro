@@ -61,7 +61,7 @@ MOC_DIR = moc
 RCC_DIR = qrc
 OBJECTS_DIR = obj
 
-CONFIG += c++11
+CONFIG += c++17
 
 #-------------------------------------------------------------------------------
 # Import source code

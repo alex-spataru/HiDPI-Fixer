@@ -33,27 +33,27 @@ class MainWindow;
 
 class MainWindow : public QMainWindow
 {
-   Q_OBJECT
+    Q_OBJECT
 
 public:
-   explicit MainWindow(QWidget *parent = nullptr);
-   ~MainWindow();
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
 
 private slots:
-   void saveScript();
-   void testScript();
-   void reportBugs();
-   void updateScriptExecControls();
-   void updateScript(const int unused);
-   void updateScript(const bool unused);
-   void generateScript(const qreal scale);
-   void updateResolutionCombo(const int index);
+    void saveScript();
+    void testScript();
+    void reportBugs();
+    void updateScriptExecControls();
+    void updateScript(const int unused);
+    void updateScript(const bool unused);
+    void generateScript(const qreal scale);
+    void updateResolutionCombo(const int index);
 
 private:
-   int saveAndExecuteScript(const QString &location);
+    int saveAndExecuteScript(const QString &location);
 
 private:
-   Ui::MainWindow *ui;
+    Ui::MainWindow *ui;
 };
 
 #endif

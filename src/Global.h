@@ -41,6 +41,7 @@ static const QString SCRIPTS_HOME = QString("%1/.hidpi-fixer").arg(QDir::homePat
  * Defines the file location and name pattern for startup scripts
  */
 static const QString AUTOSTART_PATTERN = "HiDPI-Fixer_";
-static const QString AUTOSTART_LOCATION = QString("%1/.config/autostart").arg(QDir::homePath());
+static const QString AUTOSTART_LOCATION
+    = QString("%1/.config/autostart").arg(QDir::homePath());
 
 #endif
