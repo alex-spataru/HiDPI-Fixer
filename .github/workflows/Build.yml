@@ -2,12 +2,12 @@
 # Workflow configuration
 #--------------------------------------------------------------------------------
 
-name: Build
+name: Deploy
 on:
   push:               # Run on push
     paths-ignore:     # File patterns to ignore
     - '**.md'         # Ignore changes to *.md files
-    
+
   pull_request:       # Run on pull-request
     paths-ignore:     # File-patterns to ignore
     - '**.md'         # Ignore changes to *.md files
@@ -18,85 +18,93 @@ on:
 
 env:
   VERSION: "1.4.0"
-  EXECUTABLE: "hidpi-fixer"
+  EXECUTABLE: "HiDPI-Fixer"
   APPLICATION: "HiDPI-Fixer"
+  UNIXNAME: "hdpi-fixer"
   QMAKE_PROJECT: "HiDPI-Fixer.pro"
+  PUBLISHER: "Alex Spataru"
+  QT_VERSION: 5.15.2
+  QMAKE: qmake
+  CORES: 12
 
 #--------------------------------------------------------------------------------
-# Workflow jobs (GNU/Linux only)
+# Workflow jobs
 #--------------------------------------------------------------------------------
 
 jobs:
-  #
-  # GNU/Linux build (we run on Ubuntu 16.04 to generate AppImage)
-  #
   build-linux:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
+    name: '🐧 Ubuntu 20.04'
     steps:
-      #
-      # Checkout the repository
-      #
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      
-      #
-      # Cache Qt
-      #
-      - name: Cache Qt
-        id: cache-qt
-        uses: actions/cache@v1
-        with:
-          path: ../Qt
-          key: ${{runner.os}}-QtCache
+    - name: '🧰 Checkout'
+      uses: actions/checkout@v2
 
-      #
-      # Install Qt
-      #
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v2
-        with:
-          modules: qtcharts
-          mirror: http://mirrors.ocf.berkeley.edu/qt/
-          cached: ${{steps.cache-qt.outputs.cache-hit}}
+    - name: '⚙️ Cache Qt'
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: ../Qt
+        key: ${{runner.os}}-qt${{env.QT_VERSION}}
+
+    - name: '⚙️ Install Qt'
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: ${{env.QT_VERSION}}
+        #modules: ${{env.QT_MODULES}}
+        aqtversion: '==2.0.0'
+        cached: ${{steps.cache-qt.outputs.cache-hit}}
+
+    # Install additional dependencies, stolen from:
+    # https://github.com/mapeditor/tiled/blob/master/.github/workflows/packages.yml
+    # TODO if I am not too lazy, remove uneeded dependencies
+    - name: '⚙️ Install dependencies'
+      run: |
+        sudo apt-get update
+        sudo apt-get install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev libxcb-image0-dev libxcb-util0-dev libxcb-cursor-dev libssl-dev libusb-dev libhidapi-dev libhidapi-libusb0 libhidapi-hidraw0
+        sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
+
+    - name: '🚧 Compile application'
+      run: |
+        ${{env.QMAKE}} ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
+        make -j${{env.CORES}}
+
+    - name: '⚙️ Install linuxdeploy'
+      run: |
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+        chmod +x linuxdeploy-x86_64.AppImage
+        chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
+
+    - name: '📦 Create AppImage'
+      run: |
+        export QMAKE=/home/runner/work/${{env.EXECUTABLE}}/Qt/${{env.QT_VERSION}}/gcc_64/bin/qmake
+        export PATH=/home/runner/work/${{env.EXECUTABLE}}/Qt/${{env.QT_VERSION}}/gcc_64/libexec:$PATH
+        ./linuxdeploy-x86_64.AppImage --appdir AppDir -e ${{env.UNIXNAME}} -i deploy/linux/${{env.UNIXNAME}}.png -d deploy/linux/${{env.UNIXNAME}}.desktop --plugin qt --output appimage
+        rm linuxdeploy-x86_64.AppImage
+        rm linuxdeploy-plugin-qt-x86_64.AppImage
+        mv *.AppImage ${{env.EXECUTABLE}}-${{env.VERSION}}.AppImage
           
-      #
-      # Install additional dependencies, stolen from:
-      # https://github.com/mapeditor/tiled/blob/master/.github/workflows/packages.yml
-      #
-      - name: Install dependencies
-        run: |
-             sudo apt-get update
-             sudo apt-get install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
+    - name: '📤 Upload artifact: AppImage'
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
+        path: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
         
-      #
-      # Compile the application
-      #
-      - name: Compile
+  # Upload continuous build
+  upload:
+      name: '🗂 Create release and upload artifacts'
+      needs:
+        - build-linux
+      runs-on: ubuntu-20.04
+      steps:
+      - name: '📥 Download artifacts'
+        uses: actions/download-artifact@v2
+      - name: '🗂 Inspect directory after downloading artifacts'
+        run: ls -alFR
+      - name: '🚀 Create release and upload artifacts'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-             qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
-             make -j8
-             
-      #
-      # Create the AppImage
-      #
-      - name: Create AppImage
-        run: | 
-             make INSTALL_ROOT=appdir install
-             wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
-             chmod a+x linuxdeployqt
-             ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
-     
-      #
-      # Rename AppImage to match a consistent format
-      #
-      - name: Rename AppImage
-        run: mv *.AppImage ${{env.APPLICATION}}_${{env.VERSION}}.AppImage
-        
-      #
-      # Upload AppImage to build artifacts
-      #
-      - name: Upload AppImage
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{env.APPLICATION}}_${{env.VERSION}}.AppImage
-          path: ${{env.APPLICATION}}_${{env.VERSION}}.AppImage
+            wget -q https://github.com/TheAssassin/pyuploadtool/releases/download/continuous/pyuploadtool-x86_64.AppImage
+            chmod +x pyuploadtool-x86_64.AppImage
+            ./pyuploadtool-x86_64.AppImage **/${{env.EXECUTABLE}}-${{env.VERSION}}.AppImage
