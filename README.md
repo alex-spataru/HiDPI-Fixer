@@ -15,10 +15,9 @@ This application allows you to create a script that accomplishes the following t
 - Tested on GNOME, Deepin Desktop and KDE (you need to manually set the scaling factor to 200% in Deepin and KDE).
 
 ## Screenshot
+**Note:** sorry for the screenshot taken under Wayland. I haven't really used this tool lately, but I felt the need of updating this repo after 2 years...
 
 <img width="100%" src="etc/screenshot.png"/>
-
-**Note:** sorry for the screenshot taken under Wayland. I haven't really used this tool lately, but I felt the need of updating this repo after 2 years...
 
 ## Installing/running
 
