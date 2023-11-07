@@ -87,8 +87,8 @@ jobs:
     - name: '📤 Upload artifact: AppImage'
       uses: actions/upload-artifact@v2
       with:
-        name: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
-        path: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
+        name: ${{env.EXECUTABLE}}-${{env.VERSION}}.AppImage
+        path: ${{env.EXECUTABLE}}-${{env.VERSION}}.AppImage
         
   # Upload continuous build
   upload:
