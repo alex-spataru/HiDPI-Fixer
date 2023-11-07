@@ -4,7 +4,7 @@
 
 # HiDPI Fixer
 
-[![Build Status (GitHub Actions)](https://github.com/alex-spataru/HiDPI-Fixer/workflows/Build/badge.svg)](https://github.com/alex-spataru/HiDPI-Fixer/actions/)
+[![Deploy](https://github.com/alex-spataru/HiDPI-Fixer/actions/workflows/Build.yml/badge.svg)](https://github.com/alex-spataru/HiDPI-Fixer/actions/workflows/Build.yml)
 [![Github All Releases](https://img.shields.io/github/downloads/alex-spataru/HiDPI-Fixer/total.svg)](https://github.com/alex-spataru/HiDPI-Fixer/releases/)
 
 This application allows you to create a script that accomplishes the following tasks:
