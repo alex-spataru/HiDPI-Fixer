@@ -1,8 +1,8 @@
+# HiDPI Fixer
+
 <a href="#">
     <img width="192px" height="192px" src="https://upload.wikimedia.org/wikipedia/commons/a/ab/X11.png" align="right" />
 </a>
-
-# HiDPI Fixer
 
 [![Deploy](https://github.com/alex-spataru/HiDPI-Fixer/actions/workflows/Build.yml/badge.svg)](https://github.com/alex-spataru/HiDPI-Fixer/actions/workflows/Build.yml)
 [![Github All Releases](https://img.shields.io/github/downloads/alex-spataru/HiDPI-Fixer/total.svg)](https://github.com/alex-spataru/HiDPI-Fixer/releases/)
